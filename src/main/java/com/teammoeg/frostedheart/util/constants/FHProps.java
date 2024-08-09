@@ -83,6 +83,13 @@ public class FHProps {
             .sound(SoundType.PLANT)
             .hardnessAndResistance(0.3F);
 
+    public static final AbstractBlock.Properties frozenProps = AbstractBlock.Properties
+            .create(Material.ICE)
+            .setRequiresTool()
+            .harvestTool(ToolType.PICKAXE)
+            .sound(SoundType.GLASS)
+            .hardnessAndResistance(0.6F);
+
     public static final Item.Properties itemProps = new Item.Properties().group(FHMain.itemGroup);
     public static final AbstractBlock.Properties berryBushBlocks = AbstractBlock.Properties.create(Material.PLANTS).tickRandomly().doesNotBlockMovement().sound(SoundType.SWEET_BERRY_BUSH);
     public static void init() {

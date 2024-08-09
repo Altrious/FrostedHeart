@@ -38,16 +38,7 @@ import com.teammoeg.frostedheart.content.agriculture.RyeBlock;
 import com.teammoeg.frostedheart.content.agriculture.WhiteTurnipBlock;
 import com.teammoeg.frostedheart.content.agriculture.WolfBerryBushBlock;
 import com.teammoeg.frostedheart.content.climate.WorldTemperature;
-import com.teammoeg.frostedheart.content.decoration.BoneBlock;
-import com.teammoeg.frostedheart.content.decoration.FHOreBlock;
-import com.teammoeg.frostedheart.content.decoration.OddMark;
-import com.teammoeg.frostedheart.content.decoration.PackageBlock;
-import com.teammoeg.frostedheart.content.decoration.PebbleBlock;
-import com.teammoeg.frostedheart.content.decoration.RelicChestBlock;
-import com.teammoeg.frostedheart.content.decoration.SmallGarage;
-import com.teammoeg.frostedheart.content.decoration.SmokeBlockT1;
-import com.teammoeg.frostedheart.content.decoration.WoodenBox;
-import com.teammoeg.frostedheart.content.decoration.bloodBlock;
+import com.teammoeg.frostedheart.content.decoration.*;
 import com.teammoeg.frostedheart.content.incubator.HeatIncubatorBlock;
 import com.teammoeg.frostedheart.content.incubator.IncubatorBlock;
 import com.teammoeg.frostedheart.content.research.blocks.DrawingDeskBlock;
@@ -95,6 +86,10 @@ public class FHBlocks {
 
     public static RegistryObject<Block> blood_block = register("blood_block", ()->new bloodBlock(stoneProps));
     public static RegistryObject<Block> bone_block = register("bone_block", ()->new BoneBlock(grassProps));
+    public static RegistryObject<Block> whale_meat_block = register("whale_meat_block", ()->new WhaleMeatBlock(frozenProps));
+    public static RegistryObject<Block> whale_skin_block = register("whale_block", ()->new WhaleSkinBlock(frozenProps));
+    public static RegistryObject<Block> whale_blubber_block = register("whale_blubber_block", ()->new WhaleBlubberBlock(frozenProps));
+    public static RegistryObject<Block> frost_dolphin = register("frost_dolphin", ()->new FrostDolphin(frozenProps));
     //public static RegistryObject<Block> desk = register("desk", ()->new DeskBlock(redStoneProps));
     public static RegistryObject<Block> small_garage = register("small_garage", ()->new SmallGarage(grassProps));
     public static RegistryObject<Block> package_block = register("package_block", ()->new PackageBlock(woodenProps));

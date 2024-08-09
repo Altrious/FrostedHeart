@@ -254,6 +254,9 @@ public class CommonEvents {
             if (category == EXTREME_HILLS || category == TAIGA) {
                 event.getGeneration().withStructure(FHStructureFeatures.OBSERVATORY_FEATURE);
             }
+            if (category == BEACH || category == OCEAN) {
+                event.getGeneration().withStructure(FHStructureFeatures.FROZEN_WHALE_FEATURE);
+            }
         }
     }
 

@@ -70,6 +70,7 @@ public class CommonRegistryEvents {
     @SubscribeEvent
     public static void onStructureRegistry(RegistryEvent.Register<Structure<?>> event) {
         event.getRegistry().registerAll(FHStructures.OBSERVATORY.setRegistryName(FHMain.MODID, "observatory"));
+        event.getRegistry().registerAll(FHStructures.FROZEN_WHALE.setRegistryName(FHMain.MODID, "frozen_whale"));
 
         FHStructureFeatures.registerStructureFeatures();
     }

@@ -30,11 +30,12 @@ import net.minecraft.world.gen.feature.StructureFeature;
 public class FHStructureFeatures {
     public static final StructureFeature<?, ?> OBSERVATORY_FEATURE = FHStructures.OBSERVATORY.withConfiguration(IFeatureConfig.NO_FEATURE_CONFIG);
 //    public static final StructureFeature<?, ?> VOLCANIC_VENT_FEATURE = FHStructures.VOLCANIC_VENT.withConfiguration(IFeatureConfig.NO_FEATURE_CONFIG);
-
+    public static final StructureFeature<?, ?> FROZEN_WHALE_FEATURE = FHStructures.FROZEN_WHALE.withConfiguration(IFeatureConfig.NO_FEATURE_CONFIG);
 
     public static void registerStructureFeatures() {
         Registry<StructureFeature<?, ?>> registry = WorldGenRegistries.CONFIGURED_STRUCTURE_FEATURE;
         Registry.register(registry, new ResourceLocation(FHMain.MODID, "observatory"), OBSERVATORY_FEATURE);
 //        Registry.register(registry, new ResourceLocation(FHMain.MODID,"volcanic_vent"), VOLCANIC_VENT_FEATURE);
+        Registry.register(registry, new ResourceLocation(FHMain.MODID, "frozen_whale"), FROZEN_WHALE_FEATURE);
     }
 }
