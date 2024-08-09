@@ -45,11 +45,15 @@ import com.teammoeg.frostedheart.content.research.blocks.DrawingDeskBlock;
 import com.teammoeg.frostedheart.content.research.blocks.MechCalcBlock;
 import com.teammoeg.frostedheart.content.steamenergy.HeatPipeBlock;
 import com.teammoeg.frostedheart.content.steamenergy.charger.ChargerBlock;
+import com.teammoeg.frostedheart.content.steamenergy.fountain.FountainBlock;
+import com.teammoeg.frostedheart.content.steamenergy.fountain.FountainNozzleBlock;
 import com.teammoeg.frostedheart.content.steamenergy.debug.DebugHeaterBlock;
 import com.teammoeg.frostedheart.content.steamenergy.sauna.SaunaBlock;
 import com.teammoeg.frostedheart.content.steamenergy.steamcore.SteamCoreBlock;
-import com.teammoeg.frostedheart.content.town.FHTownBuildingCoreBlock;
+import com.teammoeg.frostedheart.content.town.AbstractTownWorkerBlock;
 import com.teammoeg.frostedheart.content.town.house.HouseBlock;
+import com.teammoeg.frostedheart.content.town.hunting.HuntingBaseBlock;
+import com.teammoeg.frostedheart.content.town.hunting.HuntingCampBlock;
 import com.teammoeg.frostedheart.content.town.mine.MineBaseBlock;
 import com.teammoeg.frostedheart.content.town.mine.MineBlock;
 import com.teammoeg.frostedheart.content.town.warehouse.WarehouseBlock;
@@ -177,10 +181,26 @@ public class FHBlocks {
             .harvestTool(ToolType.PICKAXE)
             .hardnessAndResistance(2, 10)
             .notSolid()));
-    public static RegistryObject<Block> house = register("house",()->new HouseBlock(FHTownBuildingCoreBlock.TOWN_BUILDING_CORE_BLOCK_BASE_PROPERTY));
-    public static RegistryObject<Block> warehouse = register("warehouse",()->new WarehouseBlock(FHTownBuildingCoreBlock.TOWN_BUILDING_CORE_BLOCK_BASE_PROPERTY));
-    public static RegistryObject<Block> mine = register("mine",()->new MineBlock(FHTownBuildingCoreBlock.TOWN_BUILDING_CORE_BLOCK_BASE_PROPERTY));
-    public static RegistryObject<Block> mine_base = register("mine_base", ()->new MineBaseBlock(FHTownBuildingCoreBlock.TOWN_BUILDING_CORE_BLOCK_BASE_PROPERTY));
+    public static RegistryObject<Block> fountain = register("fountain_base",()-> new FountainBlock(Block.Properties
+            .create(Material.ROCK)
+            .sound(SoundType.METAL)
+            .setRequiresTool()
+            .harvestTool(ToolType.PICKAXE)
+            .hardnessAndResistance(2, 10)
+            .notSolid()));
+    public static RegistryObject<Block> fountain_nozzle = register("fountain_nozzle",()-> new FountainNozzleBlock(Block.Properties
+            .create(Material.IRON)
+            .sound(SoundType.METAL)
+            .setRequiresTool()
+            .harvestTool(ToolType.PICKAXE)
+            .hardnessAndResistance(2, 10)
+            .notSolid()));
+    public static RegistryObject<Block> house = register("house",()->new HouseBlock(AbstractTownWorkerBlock.TOWN_BUILDING_CORE_BLOCK_BASE_PROPERTY));
+    public static RegistryObject<Block> warehouse = register("warehouse",()->new WarehouseBlock(AbstractTownWorkerBlock.TOWN_BUILDING_CORE_BLOCK_BASE_PROPERTY));
+    public static RegistryObject<Block> mine = register("mine",()->new MineBlock(AbstractTownWorkerBlock.TOWN_BUILDING_CORE_BLOCK_BASE_PROPERTY));
+    public static RegistryObject<Block> mine_base = register("mine_base", ()->new MineBaseBlock(AbstractTownWorkerBlock.TOWN_BUILDING_CORE_BLOCK_BASE_PROPERTY));
+    public static RegistryObject<Block> hunting_camp = register("hunting_camp", ()->new HuntingCampBlock(AbstractTownWorkerBlock.TOWN_BUILDING_CORE_BLOCK_BASE_PROPERTY));
+    public static RegistryObject<Block> hunting_base = register("hunting_base", ()->new HuntingBaseBlock(AbstractTownWorkerBlock.TOWN_BUILDING_CORE_BLOCK_BASE_PROPERTY));
     public static final BlockEntry<SteamCoreBlock> steam_core = REGISTRATE.block("steam_core", SteamCoreBlock::new)
         .initialProperties(Material.IRON)
         .properties(t->t
@@ -196,4 +216,22 @@ public class FHBlocks {
     public static void init() {
     	Create.registrate().addToSection(steam_core, AllSections.KINETICS);
     }
+
+    //Mixxs Section
+    public static RegistryObject<Block> makeshift_generator_broken = register("makeshift_generator_broken",()->new FHBaseBlock( Block.Properties
+        .create(Material.ROCK)
+        .sound(SoundType.STONE)
+        .setRequiresTool()
+        .harvestTool(ToolType.PICKAXE)
+        .hardnessAndResistance(45, 800)
+        .harvestLevel(3)));
+
+    public static RegistryObject<Block> broken_plate = register("broken_plate",()->new FHBaseBlock( Block.Properties
+            .create(Material.IRON)
+            .sound(SoundType.METAL)
+            .setRequiresTool()
+            .harvestTool(ToolType.PICKAXE)
+            .hardnessAndResistance(45, 800)
+            .harvestLevel(3)));
+
 }

@@ -42,7 +42,7 @@ public interface TownTileEntity {
      *
      * @return the worker type
      */
-    TownWorkerType getWorker();
+    TownWorkerType getWorkerType();
 
     /**
      * Check if the work is valid.
@@ -74,5 +74,16 @@ public interface TownTileEntity {
      * Occupied area should be counted when scanning the structure.
      * @return the occupied area of the entire structure.
      */
-    Collection<ColumnPos> getOccupiedArea();
+    OccupiedArea getOccupiedArea();
+
+    /**
+     * Set the worker state.
+     * see TownBuildingCoreBlockTileEntity.workerState
+     */
+    void setWorkerState(TownWorkerState state);
+
+    /**
+     * Get the worker state.
+     */
+    TownWorkerState getWorkerState();
 }

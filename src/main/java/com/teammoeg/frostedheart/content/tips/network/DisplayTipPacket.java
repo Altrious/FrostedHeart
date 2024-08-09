@@ -1,7 +1,7 @@
 package com.teammoeg.frostedheart.content.tips.network;
 
 import com.teammoeg.frostedheart.base.network.FHMessage;
-import com.teammoeg.frostedheart.content.tips.client.TipHandler;
+import com.teammoeg.frostedheart.content.tips.TipDisplayManager;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent;
 
@@ -24,7 +24,7 @@ public class DisplayTipPacket implements FHMessage {
 
     @Override
     public void handle(Supplier<NetworkEvent.Context> context) {
-        context.get().enqueueWork(() -> TipHandler.displayTip(ID, false));
+        context.get().enqueueWork(() -> TipDisplayManager.displayTip(ID, false));
         context.get().setPacketHandled(true);
     }
 }

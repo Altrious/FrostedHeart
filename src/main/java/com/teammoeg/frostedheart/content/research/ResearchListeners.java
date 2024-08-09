@@ -28,7 +28,7 @@ import com.teammoeg.frostedheart.FHItems;
 import com.teammoeg.frostedheart.FHMain;
 import com.teammoeg.frostedheart.FHTeamDataManager;
 import com.teammoeg.frostedheart.base.team.SpecialDataTypes;
-import com.teammoeg.frostedheart.content.recipes.InspireRecipe;
+import com.teammoeg.frostedheart.recipes.InspireRecipe;
 import com.teammoeg.frostedheart.content.research.api.ClientResearchDataAPI;
 import com.teammoeg.frostedheart.content.research.api.ResearchDataAPI;
 import com.teammoeg.frostedheart.content.research.blocks.RubbingTool;
@@ -43,7 +43,6 @@ import com.teammoeg.frostedheart.content.research.research.clues.MinigameClue;
 import com.teammoeg.frostedheart.content.research.research.clues.TickListenerClue;
 import com.teammoeg.frostedheart.util.FHUtils;
 import com.teammoeg.frostedheart.util.RegistryUtils;
-import com.teammoeg.frostedheart.util.client.ClientUtils;
 import com.teammoeg.frostedheart.util.utility.OptionalLazy;
 
 import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler;
@@ -236,7 +235,7 @@ public class ResearchListeners {
         if (i.isEmpty()) return false;
         for (InspireRecipe ir : FHUtils.filterRecipes(null, InspireRecipe.TYPE)) {
             if (ir.item.test(i)) {
-                return EnergyCore.hasExtraEnergy(ClientUtils.getPlayer(), ir.inspire);
+                return true;
             }
         }
         return true;
@@ -411,10 +410,9 @@ public class ResearchListeners {
             }
             for (InspireRecipe ir : FHUtils.filterRecipes(s.getServerWorld().getRecipeManager(), InspireRecipe.TYPE)) {
                 if (ir.item.test(i)) {
-                    if (EnergyCore.useExtraEnergy(s, ir.inspire)) {
-                        i.shrink(1);
-                        EnergyCore.addPersistentEnergy(s, ir.inspire);
-                    }
+                    i.shrink(1);
+                    EnergyCore.addPersistentEnergy(s, ir.inspire);
+                    
                     return i;
                 }
             }

@@ -29,20 +29,23 @@ import com.simibubi.create.content.contraptions.base.HalfShaftInstance;
 import com.simibubi.create.foundation.data.CreateRegistrate;
 import com.simibubi.create.repack.registrate.util.entry.TileEntityEntry;
 import com.teammoeg.frostedheart.client.renderer.HalfShaftRenderer;
+import com.teammoeg.frostedheart.content.climate.heatdevice.generator.t1.T1GeneratorTileEntity;
+import com.teammoeg.frostedheart.content.climate.heatdevice.generator.t2.T2GeneratorTileEntity;
+import com.teammoeg.frostedheart.content.climate.heatdevice.radiator.RadiatorTileEntity;
 import com.teammoeg.frostedheart.content.decoration.RelicChestTileEntity;
-import com.teammoeg.frostedheart.content.heatdevice.generator.t1.T1GeneratorTileEntity;
-import com.teammoeg.frostedheart.content.heatdevice.generator.t2.T2GeneratorTileEntity;
-import com.teammoeg.frostedheart.content.heatdevice.radiator.RadiatorTileEntity;
 import com.teammoeg.frostedheart.content.incubator.HeatIncubatorTileEntity;
 import com.teammoeg.frostedheart.content.incubator.IncubatorTileEntity;
 import com.teammoeg.frostedheart.content.research.blocks.DrawingDeskTileEntity;
 import com.teammoeg.frostedheart.content.research.blocks.MechCalcTileEntity;
 import com.teammoeg.frostedheart.content.steamenergy.HeatPipeTileEntity;
 import com.teammoeg.frostedheart.content.steamenergy.charger.ChargerTileEntity;
+import com.teammoeg.frostedheart.content.steamenergy.fountain.FountainTileEntity;
 import com.teammoeg.frostedheart.content.steamenergy.debug.DebugHeaterTileEntity;
 import com.teammoeg.frostedheart.content.steamenergy.sauna.SaunaTileEntity;
 import com.teammoeg.frostedheart.content.steamenergy.steamcore.SteamCoreTileEntity;
 import com.teammoeg.frostedheart.content.town.house.HouseTileEntity;
+import com.teammoeg.frostedheart.content.town.hunting.HuntingBaseTileEntity;
+import com.teammoeg.frostedheart.content.town.hunting.HuntingCampTileEntity;
 import com.teammoeg.frostedheart.content.town.mine.MineBaseTileEntity;
 import com.teammoeg.frostedheart.content.town.mine.MineTileEntity;
 import com.teammoeg.frostedheart.content.town.warehouse.WarehouseTileEntity;
@@ -109,6 +112,10 @@ public class FHTileTypes {
         .renderer(() -> HalfShaftRenderer::new)
         .register();
 
+    public static final RegistryObject<TileEntityType<FountainTileEntity>> FOUNTAIN = REGISTER.register(
+            "fountain", makeType(FountainTileEntity::new, FHBlocks.fountain)
+    );
+
     public static final RegistryObject<TileEntityType<SaunaTileEntity>> SAUNA = REGISTER.register(
             "sauna", makeType(SaunaTileEntity::new, FHBlocks.sauna)
     );
@@ -130,7 +137,12 @@ public class FHTileTypes {
     public static final RegistryObject<TileEntityType<MineBaseTileEntity>> MINE_BASE = REGISTER.register(
             "mine_base", makeType(MineBaseTileEntity::new, FHBlocks.mine_base)
     );
-
+    public static final RegistryObject<TileEntityType<HuntingCampTileEntity>> HUNTING_CAMP = REGISTER.register(
+            "hunting_camp", makeType(HuntingCampTileEntity::new, FHBlocks.hunting_camp)
+    );
+    public static final RegistryObject<TileEntityType<HuntingBaseTileEntity>> HUNTING_BASE = REGISTER.register(
+            "hunting_base", makeType(HuntingBaseTileEntity::new, FHBlocks.hunting_base)
+    );
     private static <T extends TileEntity> Supplier<TileEntityType<T>> makeType(Supplier<T> create, Supplier<Block> valid) {
         return makeTypeMultipleBlocks(create, () -> ImmutableSet.of(valid.get()));
     }

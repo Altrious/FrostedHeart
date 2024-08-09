@@ -19,11 +19,8 @@
 
 package com.teammoeg.frostedheart.content.town;
 
-import java.util.EnumMap;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Optional;
-import java.util.UUID;
 
 import com.teammoeg.frostedheart.FHTeamDataManager;
 import com.teammoeg.frostedheart.base.team.SpecialDataTypes;
@@ -33,6 +30,7 @@ import dev.ftb.mods.ftbteams.data.Team;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.common.util.LazyOptional;
 
 /**
  * The town for a player team.
@@ -283,7 +281,7 @@ public class TeamTown implements Town {
      */
     public void addTownBlock(BlockPos pos, TownTileEntity tile) {
         TownWorkerData workerData = data.blocks.computeIfAbsent(pos, TownWorkerData::new);
-        workerData.fromBlock(tile);
+        workerData.fromTileEntity(tile);
     }
 
     /**
@@ -300,7 +298,7 @@ public class TeamTown implements Town {
     }
 
     public void addResident(Resident resident) {
-        data.residents.put(UUID.randomUUID(), resident);
+        data.residents.put(resident.getUUID(), resident);
     }
 
     public void addResident(String firstName, String lastName) {

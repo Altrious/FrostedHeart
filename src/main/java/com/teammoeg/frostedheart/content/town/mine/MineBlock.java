@@ -2,7 +2,7 @@ package com.teammoeg.frostedheart.content.town.mine;
 
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.teammoeg.frostedheart.FHTileTypes;
-import com.teammoeg.frostedheart.content.heatdevice.chunkheatdata.ChunkHeatData;
+import com.teammoeg.frostedheart.content.climate.heatdevice.chunkheatdata.ChunkHeatData;
 import com.teammoeg.frostedheart.content.town.*;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
@@ -31,7 +31,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import static net.minecraftforge.common.util.Constants.NBT.TAG_LONG;
 
 //矿场方块，不是我的方块
-public class MineBlock extends FHTownBuildingCoreBlock {
+public class MineBlock extends AbstractTownWorkerBlock {
 
     public MineBlock(Properties blockProps){
         super(blockProps);
@@ -78,9 +78,7 @@ public class MineBlock extends FHTownBuildingCoreBlock {
                             mineBaseTileEntity.refresh();
                             return mineBaseTileEntity.getLinkedMines().contains(pos);
                         })
-                        .forEach(mineBaseTileEntity -> {
-                            te.setLinkedBase(mineBaseTileEntity.getPos(), mineBaseTileEntity.getRating());
-                        });
+                        .forEach(mineBaseTileEntity -> te.setLinkedBase(mineBaseTileEntity.getPos(), mineBaseTileEntity.getRating()));
             }
         }
     }

@@ -24,9 +24,11 @@ import static net.minecraft.util.text.TextFormatting.*;
 import java.util.List;
 import java.util.Map;
 
+import com.teammoeg.frostedheart.content.tips.TipLockManager;
 import com.teammoeg.frostedheart.content.tips.client.TipElement;
-import com.teammoeg.frostedheart.content.tips.client.TipHandler;
-import net.minecraft.client.gui.screen.OptionsSoundsScreen;
+import com.teammoeg.frostedheart.content.waypoint.WaypointRenderer;
+import com.teammoeg.frostedheart.content.tips.TipDisplayManager;
+import com.teammoeg.frostedheart.util.client.RenderHelper;
 import net.minecraftforge.client.event.*;
 import org.lwjgl.glfw.GLFW;
 
@@ -35,26 +37,21 @@ import com.teammoeg.frostedheart.FHClientTeamDataManager;
 import com.teammoeg.frostedheart.FHConfig;
 import com.teammoeg.frostedheart.FHDataManager;
 import com.teammoeg.frostedheart.FHEffects;
-import com.teammoeg.frostedheart.FHItems;
 import com.teammoeg.frostedheart.FHMain;
 import com.teammoeg.frostedheart.FHNetwork;
-import com.teammoeg.frostedheart.FHParticleTypes;
-import com.teammoeg.frostedheart.FHSounds;
 import com.teammoeg.frostedheart.client.hud.FrostedHud;
 import com.teammoeg.frostedheart.compat.jei.JEICompat;
 import com.teammoeg.frostedheart.content.climate.data.BlockTempData;
 import com.teammoeg.frostedheart.content.climate.player.IHeatingEquipment;
 import com.teammoeg.frostedheart.content.climate.player.ITempAdjustFood;
 import com.teammoeg.frostedheart.content.climate.player.PlayerTemperatureData;
-import com.teammoeg.frostedheart.content.heatdevice.generator.MasterGeneratorScreen;
-import com.teammoeg.frostedheart.content.recipes.InspireRecipe;
+import com.teammoeg.frostedheart.recipes.InspireRecipe;
 import com.teammoeg.frostedheart.content.research.events.ClientResearchStatusEvent;
-import com.teammoeg.frostedheart.content.research.gui.tech.ResearchToast;
+import com.teammoeg.frostedheart.content.research.gui.ResearchToast;
 import com.teammoeg.frostedheart.content.research.research.effects.Effect;
 import com.teammoeg.frostedheart.content.research.research.effects.EffectCrafting;
 import com.teammoeg.frostedheart.content.research.research.effects.EffectShowCategory;
 import com.teammoeg.frostedheart.content.scenario.client.ClientScene;
-import com.teammoeg.frostedheart.content.scenario.client.FHScenarioClient;
 import com.teammoeg.frostedheart.content.scenario.client.dialog.HUDDialog;
 import com.teammoeg.frostedheart.content.scenario.network.ClientLinkClickedPacket;
 import com.teammoeg.frostedheart.content.utility.heatervest.HeaterVestRenderer;
@@ -80,7 +77,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.IReorderingProcessor;
-import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.IFormattableTextComponent;
 import net.minecraft.util.text.ITextComponent;
@@ -93,7 +89,6 @@ import net.minecraftforge.client.event.ClientPlayerNetworkEvent.LoggedInEvent;
 import net.minecraftforge.client.event.InputEvent.KeyInputEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.AddReloadListenerEvent;
-import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.TickEvent.ClientTickEvent;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
@@ -103,70 +98,11 @@ import net.minecraftforge.event.world.WorldEvent.Unload;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 @Mod.EventBusSubscriber(modid = FHMain.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
 public class ClientEvents {
-    /**
-     * Simulate breath particles when the player is in a cold environment
-     */
-    @SubscribeEvent
-    public static void addBreathParticles(TickEvent.PlayerTickEvent event) {
-        if (event.side == LogicalSide.CLIENT && event.phase == TickEvent.Phase.START
-                && event.player instanceof ClientPlayerEntity) {
-            ClientPlayerEntity player = (ClientPlayerEntity) event.player;
-            if(ClientUtils.mc().currentScreen instanceof MasterGeneratorScreen&&player.ticksExisted%20==0) {
-            	((MasterGeneratorScreen)ClientUtils.mc().currentScreen).fullInit();
-            }
-            if (!player.isSpectator() && !player.isCreative() && player.world != null) {
-                if (player.ticksExisted % 60 <= 3) {
-                	 PlayerTemperatureData ptd=PlayerTemperatureData.getCapability(player).orElse(null);
-                    float envTemp = ptd.getEnvTemp();
-                    if (envTemp < -10.0F) {
-                        // get the player's facing vector and make the particle spawn in front of the player
-                        double x = player.getPosX() + player.getLookVec().x * 0.3D;
-                        double z = player.getPosZ() + player.getLookVec().z * 0.3D;
-                        double y = player.getPosY() + 1.3D;
-                        // the speed of the particle is based on the player's facing, so it looks like it's coming from their mouth
-                        double xSpeed = player.getLookVec().x * 0.03D;
-                        double ySpeed = player.getLookVec().y * 0.03D;
-                        double zSpeed = player.getLookVec().z * 0.03D;
-                        // apply the player's motion to the particle
-                        xSpeed += player.getMotion().x;
-                        ySpeed += player.getMotion().y;
-                        zSpeed += player.getMotion().z;
-                        player.world.addParticle(FHParticleTypes.BREATH.get(), x, y, z, xSpeed, ySpeed, zSpeed);
-                    }
-                }
-            }
-        }
-    }
-    static int forstedSoundCd;
-    /**
-     * Play ice cracking sound when player's body temperature transitions across integer threshold.
-     */
-    @SubscribeEvent
-    public static void playFrostedSound(TickEvent.PlayerTickEvent event) {
-        if (event.side == LogicalSide.CLIENT && event.phase == TickEvent.Phase.START
-                && event.player instanceof ClientPlayerEntity) {
-            ClientPlayerEntity player = (ClientPlayerEntity) event.player;
-            if(forstedSoundCd>0)
-            	forstedSoundCd--;
-            if (!player.isSpectator() && !player.isCreative() && player.world != null&&forstedSoundCd>0) {
-            	
-            	PlayerTemperatureData ptd=PlayerTemperatureData.getCapability(player).orElse(null);
-                float prevTemp = ptd.smoothedBodyPrev;
-                float currTemp = ptd.smoothedBody;
-                // play sound if currTemp transitions across integer threshold
-                if (currTemp <= 0.5F && MathHelper.floor(prevTemp - 0.5F) != MathHelper.floor(currTemp - 0.5F)) {
-                    player.world.playSound(player, player.getPosition(), FHSounds.ICE_CRACKING.get(), SoundCategory.PLAYERS, 1.0F, 1.0F);
-                    forstedSoundCd=20;
-                }
-            }
-        }
-    }
 
     @SubscribeEvent
     public static void addItemTooltip(ItemTooltipEvent event) {
@@ -278,7 +214,7 @@ public class ClientEvents {
         }
     }
 
-    @SubscribeEvent
+    /*@SubscribeEvent
     public static void addWeatherItemTooltips(ItemTooltipEvent event) {
         ItemStack stack = event.getItemStack();
         if (stack.getItem() == FHItems.temperatureProbe.get()) {
@@ -290,7 +226,7 @@ public class ClientEvents {
         if (stack.getItem() == FHItems.weatherHelmet.get()) {
             event.getToolTip().add(TranslateUtils.translateTooltip("weather_helmet").mergeStyle(TextFormatting.GRAY));
         }
-    }
+    }*/
 
     @SuppressWarnings({"unchecked"})
     @SubscribeEvent
@@ -378,8 +314,9 @@ public class ClientEvents {
 
     @SubscribeEvent
     public static void fireLogin(LoggedInEvent event) {
-        FHScenarioClient.sendInitializePacket = true;
         DistExecutor.safeRunWhenOn(Dist.CLIENT, () -> FHClientTeamDataManager.INSTANCE::reset);
+        ClientScene.INSTANCE=new ClientScene();
+    	ClientScene.INSTANCE.sendClientReady();
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
@@ -406,6 +343,8 @@ public class ClientEvents {
                     FrostedHud.renderFrozenVignette(stack, anchorX, anchorY, mc, renderViewPlayer);
                 if (FrostedHud.renderHeatVignette)
                     FrostedHud.renderHeatVignette(stack, anchorX, anchorY, mc, renderViewPlayer);
+                if (FrostedHud.renderWaypoint)
+                    WaypointRenderer.render(stack);
 
 
             }
@@ -467,7 +406,7 @@ public class ClientEvents {
 
     @SubscribeEvent
     public static void sendLoginUpdateReminder(PlayerEvent.PlayerLoggedInEvent event) {
-    	forstedSoundCd=0;
+    	
         FHMain.remote.fetchVersion().ifPresent(stableVersion -> {
             boolean isStable = true;
             if (FHMain.pre != null && FHMain.pre.fetchVersion().isPresent()) {
@@ -556,7 +495,6 @@ public class ClientEvents {
     @SubscribeEvent
     public static void unloadWorld(Unload event) {
         ClientUtils.applyspg = false;
-        TipHandler.clearRenderQueue();
     }
 
     @SuppressWarnings({"resource", "unchecked", "rawtypes"})
@@ -570,17 +508,8 @@ public class ClientEvents {
                     ((ArmorStandRenderer) render).addLayer(new HeaterVestRenderer<>((ArmorStandRenderer) render));
             HeaterVestRenderer.rendersAssigned = true;
         }
-    }
+    }    @SuppressWarnings({"resource", "unchecked", "rawtypes"})
 
-    @SubscribeEvent
-    public static void onWorldRender(RenderWorldLastEvent event) {
-        if(FHScenarioClient.sendInitializePacket) {
-        	ClientScene.INSTANCE=new ClientScene();
-        	FHScenarioClient.sendInitializePacket=false;
-        	ClientScene.INSTANCE.sendClientReady();
-        	
-        }
-    }
 
     @SubscribeEvent
     public void onWorldUnLoad(Unload event) {
@@ -652,42 +581,45 @@ public class ClientEvents {
      */
 
     @SubscribeEvent
+    public static void onWorldRender(RenderWorldLastEvent event) {
+        //渲染信息中获取的投影矩阵没有包含行走时的视角晃动
+        RenderHelper.projectionMatrix = event.getProjectionMatrix();
+    }
+
+    @SubscribeEvent
     public static void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
-        TipHandler.clearRenderQueue();
-        TipHandler.displayTip("_default", false);
-        TipHandler.displayTip("_default2", false);
-        if (Minecraft.getInstance().gameSettings.getSoundLevel(SoundCategory.MUSIC) == 0) {
-            TipHandler.displayTip("_music_warning", false);
-        }
+        TipDisplayManager.clearRenderQueue();
+        TipDisplayManager.displayTip("default", false);
+        TipDisplayManager.displayTip("default2", false);
+//        if (Minecraft.getInstance().gameSettings.getSoundLevel(SoundCategory.MUSIC) == 0) {
+//            TipDisplayManager.displayTip("music_warning", false);
+//        }
     }
 
     @SubscribeEvent
     public static void onPlayerLoggedOut(PlayerEvent.PlayerLoggedOutEvent event) {
-        TipHandler.clearRenderQueue();
+        TipDisplayManager.clearRenderQueue();
+        WaypointRenderer.clear();
     }
 
     @SubscribeEvent
     public static void onGUIOpen(GuiOpenEvent event) {
         if (event.getGui() instanceof MainMenuScreen) {
-            if (TipHandler.readError) {
+            if (!TipLockManager.errorType.isEmpty()) {
                 TipElement ele = new TipElement();
-                ele.replaceToError(TipHandler.UNLOCKED_FILEPATH, "read");
-                TipHandler.displayTip(ele, true);
-                TipHandler.readError = false;
+                ele.replaceToError(TipLockManager.UNLOCKED_FILE, TipLockManager.errorType);
+                TipDisplayManager.displayTip(ele, true);
+                TipLockManager.errorType = "";
             }
+        }
+    }
 
-//            if (...如果有新版本) {
-//              TipHandler.displayTip("update", false);
+//    @SubscribeEvent
+//    public static void onGUIRender(GuiScreenEvent event) {
+//        if (event.getGui() instanceof OptionsSoundsScreen) {
+//            if (Minecraft.getInstance().gameSettings.getSoundLevel(SoundCategory.MUSIC) <= 0) {
+//                TipDisplayManager.displayTip("music_warning", false);
 //            }
-        }
-    }
-
-    @SubscribeEvent
-    public static void onGUIRender(GuiScreenEvent event) {
-        if (event.getGui() instanceof OptionsSoundsScreen) {
-            if (Minecraft.getInstance().gameSettings.getSoundLevel(SoundCategory.MUSIC) <= 0) {
-                TipHandler.displayTip("_music_warning", false);
-            }
-        }
-    }
+//        }
+//    }
 }

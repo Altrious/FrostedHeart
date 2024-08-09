@@ -20,15 +20,11 @@
 package com.teammoeg.frostedheart.util;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.BitSet;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Random;
+import java.lang.reflect.InvocationTargetException;
+import java.util.*;
 import java.util.function.ToIntFunction;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
@@ -38,7 +34,7 @@ import com.teammoeg.frostedheart.FHMain;
 import com.teammoeg.frostedheart.base.capability.nbt.FHNBTCapability;
 import com.teammoeg.frostedheart.content.climate.WorldClimate;
 import com.teammoeg.frostedheart.content.climate.WorldTemperature;
-import com.teammoeg.frostedheart.content.heatdevice.chunkheatdata.ChunkHeatData;
+import com.teammoeg.frostedheart.content.climate.heatdevice.chunkheatdata.ChunkHeatData;
 import com.teammoeg.frostedheart.util.client.ClientUtils;
 import com.teammoeg.frostedheart.util.io.NBTSerializable;
 
@@ -399,4 +395,16 @@ public class FHUtils {
 	    return fields;
 	}
 
+    public static <C extends Collection<T>, T> C copyCollection(@Nonnull C collection){
+        try {
+            C copyCollection = (C) collection.getClass().getConstructor().newInstance();
+            copyCollection.addAll(collection);
+            return copyCollection;
+
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            System.err.println("Failed to copy the collection due to an error: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return null;
+    }
 }

@@ -24,6 +24,7 @@ import static net.minecraft.inventory.container.PlayerContainer.*;
 import java.util.Map;
 import java.util.function.Function;
 
+import com.teammoeg.frostedheart.client.particles.WetSteamParticle;
 import org.lwjgl.glfw.GLFW;
 
 import com.teammoeg.frostedheart.FHBlocks;
@@ -37,12 +38,12 @@ import com.teammoeg.frostedheart.client.model.LiningModel;
 import com.teammoeg.frostedheart.client.particles.BreathParticle;
 import com.teammoeg.frostedheart.client.particles.SteamParticle;
 import com.teammoeg.frostedheart.compat.tetra.TetraClient;
+import com.teammoeg.frostedheart.content.climate.heatdevice.generator.MasterGeneratorScreen;
+import com.teammoeg.frostedheart.content.climate.heatdevice.generator.t1.T1GeneratorRenderer;
+import com.teammoeg.frostedheart.content.climate.heatdevice.generator.t1.T1GeneratorTileEntity;
+import com.teammoeg.frostedheart.content.climate.heatdevice.generator.t2.T2GeneratorRenderer;
+import com.teammoeg.frostedheart.content.climate.heatdevice.generator.t2.T2GeneratorTileEntity;
 import com.teammoeg.frostedheart.content.decoration.RelicChestScreen;
-import com.teammoeg.frostedheart.content.heatdevice.generator.MasterGeneratorScreen;
-import com.teammoeg.frostedheart.content.heatdevice.generator.t1.T1GeneratorRenderer;
-import com.teammoeg.frostedheart.content.heatdevice.generator.t1.T1GeneratorTileEntity;
-import com.teammoeg.frostedheart.content.heatdevice.generator.t2.T2GeneratorRenderer;
-import com.teammoeg.frostedheart.content.heatdevice.generator.t2.T2GeneratorTileEntity;
 import com.teammoeg.frostedheart.content.incubator.IncubatorT1Screen;
 import com.teammoeg.frostedheart.content.incubator.IncubatorT2Screen;
 import com.teammoeg.frostedheart.content.research.blocks.MechCalcRenderer;
@@ -241,6 +242,7 @@ public class ClientRegistryEvents {
     public static void registerParticleFactories(ParticleFactoryRegisterEvent event) {
         Minecraft.getInstance().particles.registerFactory(FHParticleTypes.STEAM.get(), SteamParticle.Factory::new);
         Minecraft.getInstance().particles.registerFactory(FHParticleTypes.BREATH.get(), BreathParticle.Factory::new);
+        Minecraft.getInstance().particles.registerFactory(FHParticleTypes.WET_STEAM.get(), WetSteamParticle.Factory::new);
     }
 
 }

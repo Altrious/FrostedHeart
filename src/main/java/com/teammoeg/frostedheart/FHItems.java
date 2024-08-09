@@ -32,7 +32,7 @@ import com.teammoeg.frostedheart.content.research.blocks.FHBasePen;
 import com.teammoeg.frostedheart.content.research.blocks.FHReusablePen;
 import com.teammoeg.frostedheart.content.research.blocks.RubbingTool;
 import com.teammoeg.frostedheart.content.steamenergy.debug.HeatDebugItem;
-import com.teammoeg.frostedheart.content.tips.DebugItem;
+import com.teammoeg.frostedheart.content.utility.DebugItem;
 import com.teammoeg.frostedheart.content.utility.CeramicBucket;
 import com.teammoeg.frostedheart.content.utility.GeneratorUpgraderI;
 import com.teammoeg.frostedheart.content.utility.MushroomBed;
@@ -157,4 +157,11 @@ public class FHItems {
     }
     public static void init() {
     }
+
+    //Mixxs section
+    public static RegistryObject<Item> makeshift_core_broken = register("makeshift_core_broken",n->new FHBaseItem( createProps()));
+    public static RegistryObject<Item> handheld_core = register("handheld_core",n->new FHBaseItem( createProps()));
+    //public static RegistryObject<Item> body_lamp = register("heater_vest",n->new HeaterVestItem( createProps().maxStackSize(1).setNoRepair()));
+
+
 }

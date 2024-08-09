@@ -26,11 +26,11 @@ import java.util.Map;
 import java.util.function.Function;
 
 import com.teammoeg.frostedheart.base.network.FHMessage;
+import com.teammoeg.frostedheart.content.climate.heatdevice.chunkheatdata.FHBodyDataSyncPacket;
+import com.teammoeg.frostedheart.content.climate.heatdevice.generator.GeneratorModifyPacket;
 import com.teammoeg.frostedheart.content.climate.network.FHClimatePacket;
 import com.teammoeg.frostedheart.content.climate.network.FHDatapackSyncPacket;
 import com.teammoeg.frostedheart.content.climate.network.FHTemperatureDisplayPacket;
-import com.teammoeg.frostedheart.content.heatdevice.chunkheatdata.FHBodyDataSyncPacket;
-import com.teammoeg.frostedheart.content.heatdevice.generator.GeneratorModifyPacket;
 import com.teammoeg.frostedheart.content.research.network.FHChangeActiveResearchPacket;
 import com.teammoeg.frostedheart.content.research.network.FHClueProgressSyncPacket;
 import com.teammoeg.frostedheart.content.research.network.FHDrawingDeskOperationPacket;
@@ -52,13 +52,16 @@ import com.teammoeg.frostedheart.content.scenario.network.ServerScenarioCommandP
 import com.teammoeg.frostedheart.content.scenario.network.ServerSenarioActPacket;
 import com.teammoeg.frostedheart.content.scenario.network.ServerSenarioScenePacket;
 import com.teammoeg.frostedheart.content.steamenergy.EndPointDataPacket;
+import com.teammoeg.frostedheart.content.tips.network.DisplayCustomTipPacket;
 import com.teammoeg.frostedheart.content.tips.network.DisplayTipPacket;
+import com.teammoeg.frostedheart.content.waypoint.network.WaypointSyncAllPacket;
 import com.teammoeg.frostedheart.content.town.TeamTownDataS2CPacket;
 import com.teammoeg.frostedheart.content.trade.network.BargainRequestPacket;
 import com.teammoeg.frostedheart.content.trade.network.BargainResponse;
 import com.teammoeg.frostedheart.content.trade.network.TradeCommitPacket;
 import com.teammoeg.frostedheart.content.trade.network.TradeUpdatePacket;
 
+import com.teammoeg.frostedheart.content.waypoint.network.WaypointSyncPacket;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.ModList;
@@ -164,7 +167,13 @@ public class FHNetwork {
         // Generator Messages
         registerMessage("generator_upgrade", GeneratorModifyPacket.class);
 
-        registerMessage("display_tip", DisplayTipPacket.class);
+        // Tip Messages
+        registerMessage("single_tip", DisplayTipPacket.class);
+        registerMessage("custom_tip", DisplayCustomTipPacket.class);
+
+        // Waypoint Messages
+        registerMessage("waypoint_sync", WaypointSyncPacket.class);
+        registerMessage("waypoint_sync_all", WaypointSyncAllPacket.class);
     }
 
     public static void send(PacketDistributor.PacketTarget target, FHMessage message) {

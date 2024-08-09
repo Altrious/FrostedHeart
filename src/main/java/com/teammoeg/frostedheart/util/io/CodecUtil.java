@@ -33,7 +33,8 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.EitherMapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.teammoeg.frostedheart.base.team.SpecialDataHolder;
-import com.teammoeg.frostedheart.content.heatdevice.generator.GeneratorData;
+import com.teammoeg.frostedheart.content.climate.heatdevice.generator.GeneratorData;
+import com.teammoeg.frostedheart.util.ConstructorCodec;
 import com.teammoeg.frostedheart.util.io.codec.AlternativeCodecBuilder;
 import com.teammoeg.frostedheart.util.io.codec.BooleansCodec.BooleanCodecBuilder;
 import com.teammoeg.frostedheart.util.io.codec.CompressDifferCodec;
@@ -161,6 +162,9 @@ public class CodecUtil {
 	public static <A> MapCodec<A> fieldOfs(Codec<A> val, String...keys) {
 		return new KeysCodec<>(val,keys);
 	}
+	public static <A,T> MapCodec<A> optionalFieldOfs(Codec<A> val,Function<DynamicOps<T>,T> def, String...keys) {
+		return new KeysCodec<>(val,def,keys);
+	}
 	public static <A> DefaultValueCodec<A> defaultSupply(Codec<A> val, Supplier<A> def) {
 		return new DefaultValueCodec<A>(val, def);
 	}
@@ -225,7 +229,7 @@ public class CodecUtil {
 	public static <O> BooleanCodecBuilder<O> booleans(String flag){
 		return new BooleanCodecBuilder<O>(flag);
 	}
-	public static <S,A,B> RecordCodecBuilder<S, Either<A, B>> either2(
+	public static <S,A,B> RecordCodecBuilder<S, Either<A, B>> either(
 			MapCodec<A> a,MapCodec<B> b,
 			Function<S,A> fa,Function<S,B> fb){
 		return new EitherMapCodec<>(a,b).forGetter(o->{
@@ -235,39 +239,39 @@ public class CodecUtil {
 			return Either.right(fb.apply(o));
 		});
 	}
-	public static <O,A,B,C> RecordCodecBuilder<O, Either<A, Either<B, C>>> either3(
+	public static <O,A,B,C> RecordCodecBuilder<O, Either<A, Either<B, C>>> either(
 			MapCodec<A> a,MapCodec<B> b,MapCodec<C> c,
 			Function<O,A> fa,Function<O,B> fb,Function<O,C> fc){
 		return either(a,either(b,c))
 			.forGetter(leftRight(fa,leftRight(fb,fc)));
 	}
-	public static <O,A,B,C,D> RecordCodecBuilder<O, Either<A, Either<B, Either<C, D>>>> either4(
+	public static <O,A,B,C,D> RecordCodecBuilder<O, Either<A, Either<B, Either<C, D>>>> either(
 			MapCodec<A> a,MapCodec<B> b,MapCodec<C> c,MapCodec<D> d,
 			Function<O,A> fa,Function<O,B> fb,Function<O,C> fc,Function<O,D> fd){
 		return either(a,either(b,either(c,d)))
 			.forGetter(leftRight(fa,leftRight(fb,leftRight(fc,fd))));
 	}
-	public static <O,A,B,C,D,E> RecordCodecBuilder<O, Either<A, Either<B, Either<C, Either<D, E>>>>> either5(
+	public static <O,A,B,C,D,E> RecordCodecBuilder<O, Either<A, Either<B, Either<C, Either<D, E>>>>> either(
 			MapCodec<A> a,MapCodec<B> b,MapCodec<C> c,MapCodec<D> d,MapCodec<E> e,
 			Function<O,A> fa,Function<O,B> fb,Function<O,C> fc,Function<O,D> fd,Function<O,E> fe){
 		return either(a,either(b,either(c,either(d,e))))
 			.forGetter(leftRight(fa,leftRight(fb,leftRight(fc,leftRight(fd,fe)))));
 	}
-	public static <O, A, B, C, D, E, F> RecordCodecBuilder<O, Either<A, Either<B, Either<C, Either<D, Either<E, F>>>>>> either6(
+	public static <O, A, B, C, D, E, F> RecordCodecBuilder<O, Either<A, Either<B, Either<C, Either<D, Either<E, F>>>>>> either(
 	        MapCodec<A> a, MapCodec<B> b, MapCodec<C> c, MapCodec<D> d, MapCodec<E> e, MapCodec<F> f,
 	        Function<O, A> fa, Function<O, B> fb, Function<O, C> fc, Function<O, D> fd, Function<O, E> fe, Function<O, F> ff) {
 	    return either(a, either(b, either(c, either(d, either(e, f)))))
 	    	.forGetter(leftRight(fa, leftRight(fb, leftRight(fc, leftRight(fd, leftRight(fe, ff))))));
 	}
 	
-	public static <O, A, B, C, D, E, F, G> RecordCodecBuilder<O, Either<A, Either<B, Either<C, Either<D, Either<E, Either<F, G>>>>>>> either7(
+	public static <O, A, B, C, D, E, F, G> RecordCodecBuilder<O, Either<A, Either<B, Either<C, Either<D, Either<E, Either<F, G>>>>>>> either(
 	        MapCodec<A> a, MapCodec<B> b, MapCodec<C> c, MapCodec<D> d, MapCodec<E> e, MapCodec<F> f, MapCodec<G> g,
 	        Function<O, A> fa, Function<O, B> fb, Function<O, C> fc, Function<O, D> fd, Function<O, E> fe, Function<O, F> ff, Function<O, G> fg) {
 	    return either(a, either(b, either(c, either(d, either(e, either(f, g))))))
 	    	.forGetter(leftRight(fa, leftRight(fb, leftRight(fc, leftRight(fd, leftRight(fe, leftRight(ff, fg)))))));
 	}
 	
-	public static <O, A, B, C, D, E, F, G, H> RecordCodecBuilder<O, Either<A, Either<B, Either<C, Either<D, Either<E, Either<F, Either<G, H>>>>>>>> either8(
+	public static <O, A, B, C, D, E, F, G, H> RecordCodecBuilder<O, Either<A, Either<B, Either<C, Either<D, Either<E, Either<F, Either<G, H>>>>>>>> either(
 	        MapCodec<A> a, MapCodec<B> b, MapCodec<C> c, MapCodec<D> d, MapCodec<E> e, MapCodec<F> f, MapCodec<G> g, MapCodec<H> h,
 	        Function<O, A> fa, Function<O, B> fb, Function<O, C> fc, Function<O, D> fd, Function<O, E> fe, Function<O, F> ff, Function<O, G> fg, Function<O, H> fh) {
 	    return either(a, either(b, either(c, either(d, either(e, either(f, either(g, h)))))))
@@ -332,6 +336,24 @@ public class CodecUtil {
 	}
 	public static <T, A> T decodeOrThrow(DataResult<Pair<T, A>> result) {
 		return result.getOrThrow(true, s->{}).getFirst();
+	}
+	public static <A> A initEmpty(Codec<A> codec) {
+		if(codec instanceof ConstructorCodec)
+			return ((ConstructorCodec<A>) codec).getInstance();
+		return decodeOrThrow(codec.decode(NBTDynamicOps.INSTANCE,new CompoundNBT()));
+	}
+	public static <T> void encodeNBT(Codec<T> codec,CompoundNBT nbt,String key,T value) {
+		codec.encodeStart(NBTDynamicOps.INSTANCE, value).resultOrPartial(System.out::println).ifPresent(t->nbt.put(key,t));
+	}
+	public static <T> T decodeNBTIfPresent(Codec<T> codec,CompoundNBT nbt,String key) {
+		if(nbt.contains(key))
+			return codec.parse(NBTDynamicOps.INSTANCE, nbt.get(key)).resultOrPartial(System.out::println).orElse(null);
+		return null;
+	}
+	public static <T> T decodeNBT(Codec<T> codec,CompoundNBT nbt,String key) {
+		if(nbt.contains(key))
+			return codec.parse(NBTDynamicOps.INSTANCE, nbt.get(key)).resultOrPartial(System.out::println).orElse(null);
+		return codec.parse(NBTDynamicOps.INSTANCE,NBTDynamicOps.INSTANCE.empty()).resultOrPartial(System.out::println).orElse(null);
 	}
 	public static <T> ListNBT toNBTList(Collection<T> stacks, Codec<T> codec) {
 		ArrayNBTBuilder<Void> arrayBuilder = ArrayNBTBuilder.create();
